@@ -1,3 +1,4 @@
+import "./styles.css";
 import { useContext } from "react";
 import { CartContext } from "../../Context/CartContext";
 import { Link } from "react-router-dom";
@@ -20,6 +21,8 @@ const Carrito = () => {
                     <div key={prod.id}>
                         <br />
                         <h2>{prod.nombre}</h2>
+                        <img src={`${prod.imagen}`} className="imagen" alt={prod.nombre}></img>
+                        <p>Descripción: {prod.descripcion}</p>
                         <p>Precio un: ${prod.precio}</p>
                         <p>Precio total: ${prod.precio * prod.cantidad}</p>
                         <p>Cant: {prod.cantidad}</p>
