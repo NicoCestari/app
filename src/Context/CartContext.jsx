@@ -1,7 +1,15 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useState, useContext } from "react";
 
 
 export const CartContext = createContext();
+
+export const useCart = () => {
+    const context = useContext(CartContext);
+    if (!context) {
+        throw new Error();
+    }
+    return context;
+};
 
 const carritoInicial = JSON.parse(localStorage.getItem("carrito")) || [];
 
@@ -9,6 +17,23 @@ export const CartProvider = ({ children }) => {
     const [carrito, setCarrito] = useState(carritoInicial);
 
 
+    const [productos, setProductos] = useState([]);
+
+    const [productosEliminados, setProductosEliminados] = useState([]);
+
+    const eliminarProducto = (prod) => {
+        const productosFiltrados = productos.filter(producto => producto.id !== prod.id);
+        setProductos(productosFiltrados);
+
+        setProductosEliminados([...productosEliminados, prod]);
+
+        actualizarCarrito();
+    };
+
+    const actualizarCarrito = () => {
+        const carritoActualizado = carrito.filter(producto => !productosEliminados.includes(producto));
+        setCarrito(carritoActualizado);
+    };
 
     const agregarAlCarrito = (item, cantidad) => {
         const itemAgregado = { ...item, cantidad };
@@ -38,9 +63,6 @@ export const CartProvider = ({ children }) => {
         setCarrito([]);
     }
 
-    // const eliminarItem = (productId) => {
-    //     setProducts(products.filter((product) =>product.id !== productId))
-    // }
 
     useEffect(() => {
         localStorage.setItem("carrito", JSON.stringify(carrito));
@@ -52,10 +74,12 @@ export const CartProvider = ({ children }) => {
             agregarAlCarrito,
             cantidadEnCarrito,
             precioTotal,
-            vaciarCarrito
-            // eliminarItem
+            vaciarCarrito,
+            eliminarProducto,
+            actualizarCarrito
         }}>
             {children}
         </CartContext.Provider>
     )
 };
+

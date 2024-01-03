@@ -1,15 +1,22 @@
 import "./styles.css";
 import { useContext } from "react";
-import { CartContext } from "../../Context/CartContext";
+import { CartContext, useCart } from "../../Context/CartContext";
 import { Link } from "react-router-dom";
+import { Button } from "react-bootstrap";
+
 
 
 const Carrito = () => {
 
-    const { carrito, precioTotal, vaciarCarrito, } = useContext(CartContext);
+    const { eliminarProducto } = useCart();
+    const { carrito, precioTotal, vaciarCarrito} = useContext(CartContext);
 
     const handleVaciar = () => {
         vaciarCarrito();
+    }
+
+    const handleEliminar = (prod) => {
+        eliminarProducto(prod);
     }
 
     return (
@@ -27,6 +34,7 @@ const Carrito = () => {
                         <p>Precio total: ${prod.precio * prod.cantidad}</p>
                         <p>Cant: {prod.cantidad}</p>
                         <br />
+                        <Button onClick={() => handleEliminar(prod)}>Eliminar producto</Button>
                     </div>
                 ))
             }
